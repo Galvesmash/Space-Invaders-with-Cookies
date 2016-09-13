@@ -438,6 +438,7 @@ function update(){
 
 function nextBtnClick(){
   difficult++;
+  lifes++;
   nextLevel();
 
   var text = document.querySelector('.gameWinText');
@@ -452,7 +453,7 @@ function nextBtnClick(){
 function resetBtnClick(){
   difficult=1;
   nextLevel();
-  
+
   lifes = 3;
   scoreNum = 0;
 
@@ -487,6 +488,9 @@ function nextLevel(){
   gameOver = false;
   win = false;
   endButtonCreated = false;
+  shot = false;
+  moveRight = false;
+  moveLeft = false;
 }
 
 document.addEventListener('keypress', keyPress);
