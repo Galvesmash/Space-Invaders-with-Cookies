@@ -53,7 +53,7 @@ function getRightBorderEnemy(){
 
 function resetInvencibility(){
   invencible=false;
-  player.style.backgroundColor = 'black';
+  player.style.background = 'url(\'../img/tank.png\') 0 0';;
 }
 
 function resetShotPlayer() {
@@ -218,7 +218,6 @@ function deleteAllShots(){
 // ------------ UPDATE ------------
 function update(){
   if (!player) {
-    highScore = ReadCookie();
     nextLevel();
   }
 
@@ -293,8 +292,8 @@ function update(){
               invencible = true;
               lifes--;
               scoreNum-=50;
-              player.style.backgroundColor = 'blue';
-              document.body.querySelector('.score').innerHTML = 'HighScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lifes: ' + lifes;
+              player.style.background = 'url(\'../img/tankDmg.png\') 0 0';
+              document.body.querySelector('.score').innerHTML = 'HighScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lives: ' + lifes;
               window.setTimeout(resetInvencibility, invencibleTime);
             }
 
@@ -333,7 +332,7 @@ function update(){
             enemies = document.querySelectorAll('.enemy');
 
             scoreNum += enemyPoints;
-            document.body.querySelector('.score').innerHTML = 'HightScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lifes: ' + lifes;
+            document.body.querySelector('.score').innerHTML = 'HighScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lives: ' + lifes;
           }
         });
 
@@ -378,33 +377,15 @@ function update(){
 
         endButton= document.createElement('button');
         endButton= document.createElement('input');
-        // endButton.innerHTML = 'Next level';
+
         endButton.setAttribute('type', 'button');
         endButton.setAttribute('value', 'Reset game');
         endButton.setAttribute('onclick', 'resetBtnClick();');
 
-        endButton.className = 'endButton';
+        //endButton.className = 'endButton';
 
         document.body.querySelector('.background').appendChild(endButton);
       }
-      // endButton.onClick = function() {
-      //   console.log('CLICKED!');
-      //   difficult=1;
-      //   nextLevel();
-      //   lifes = 3;
-      //   scoreNum = 0;
-
-      //   var text = document.querySelector('.highScoreText');
-      //   text.parentNode.removeChild(text);
-
-      //   text = document.querySelector('.gameOverText');
-      //   text.parentNode.removeChild(text);
-
-      //   text = document.querySelector('.finalScoreText');
-      //   text.parentNode.removeChild(text);
-
-      //   buttonnode.parentNode.removeChild(buttonnode);
-      // };
     } else {
       if (!endButtonCreated){
         endButtonCreated = true;
@@ -419,23 +400,10 @@ function update(){
         endButton.setAttribute('value', 'Next level');
         endButton.setAttribute('onclick', 'nextBtnClick();');
 
-        endButton.className = 'endButton';
+        //endButton.className = 'endButton';
 
         document.body.querySelector('.background').appendChild(endButton);
       }
-      // endButton.onClick = function() {
-      //   console.log('CLICKED!');
-      //   difficult++;
-      //   nextLevel();
-
-      //   var text = document.querySelector('.gameWinText');
-      //   text.parentNode.removeChild(text);
-
-      //   text = document.querySelector('.finalScoreText');
-      //   text.parentNode.removeChild(text);
-
-      //   buttonnode.parentNode.removeChild(buttonnode);
-      // };
     }
   }
 }
@@ -474,7 +442,8 @@ function resetBtnClick(){
 }
 
 function nextLevel(){
-  document.body.querySelector('.score').innerHTML = 'HightScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lifes: ' + lifes;
+  highScore = ReadCookie();
+  document.body.querySelector('.score').innerHTML = 'HighScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lives: ' + lifes;
 
   player = document.createElement('div');
   document.body.querySelector('.background').appendChild(player);

@@ -7,13 +7,13 @@
 .player {
   position:absolute; top:40px; left:400px;
   width:32px; height:32px;          
-  background-color:black;
+  background: url('../img/tank.png') 0 0;
 }
 
 .enemy {
   position:absolute;
   width:32px; height:32px;          
-  background-color: green;
+  background: url('../img/spaceInvader1.png') 0 0;
 }
 
 .playerShot {
