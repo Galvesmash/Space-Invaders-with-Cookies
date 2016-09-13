@@ -4,7 +4,7 @@ var canShot = true, enemyCanShot=true, canRandEnemy=true, player, playerShots, e
 var moveSpeed = 5, shotSpeed = 8, enemySpeed=1, playerSize = 32, enemyDownSpeed=8;
 var heightLimit=screenHeight-playerSize-11, widthLimit=screenWidth-playerSize-1;
 var moveLeft = false, moveRight = false, moveEnemyLeft=false;
-var difficult=1, MinTurn=2, turnsToUpSpeed=MinTurn, win=false;
+var difficult=1, MinTurn=2, turnsToUpSpeed=MinTurn, win=false, endButtonCreated=false, endButton;
 
 function spawnEnemy(){
   var enemySize=32, spawnSpace=18/*12*/, enemyMaxPerLine=12/*16*/, enemyMaxLines=5, spawnHeight=0, spawnWidth=0;
@@ -100,7 +100,7 @@ function movePlayer() {
 }
 
 function keyPress(evt) {
-  if (lifes < 0)
+  if (lifes < 0 || win)
     return;
 
   var charCode = evt.keyCode || evt.which;
@@ -111,7 +111,7 @@ function keyPress(evt) {
 };
 
 function checkKeyDown(e) {
-  if (lifes < 0)
+  if (lifes < 0 || win)
     return;
 
   e = e || window.event;
@@ -158,76 +158,79 @@ function ReadCookie() {
     }
 }
 
+function endGame_Lost(){
+  document.body.querySelector('.score').innerHTML = '';
+  
+  var divText = document.createElement('div');
+  document.body.querySelector('.background').appendChild(divText);
+  divText.className = 'highScoreText';
+  document.body.querySelector('.highScoreText').innerHTML = 'HightScore: ' + ReadCookie();
+
+  divText = document.createElement('div');
+  document.body.querySelector('.background').appendChild(divText);
+  divText.className = 'gameOverText';
+  document.body.querySelector('.gameOverText').innerHTML = 'Se Fodeu';
+
+  divText = document.createElement('div');
+  document.body.querySelector('.background').appendChild(divText);
+  divText.className = 'finalScoreText';
+  document.body.querySelector('.finalScoreText').innerHTML = 'Score: ' + scoreNum;
+}
+
+function endGame_Win(){
+  document.body.querySelector('.score').innerHTML = '';
+
+  var divText = document.createElement('div');
+  document.body.querySelector('.background').appendChild(divText);
+  divText.className = 'gameWinText';
+  document.body.querySelector('.gameWinText').innerHTML = 'Level ' + difficult + ' concluído';
+
+  divText = document.createElement('div');
+  document.body.querySelector('.background').appendChild(divText);
+  divText.className = 'finalScoreText';
+  document.body.querySelector('.finalScoreText').innerHTML = 'Score: ' + scoreNum;
+}
+
+function deleteAllEnemies(){
+  if (enemies) {
+    enemies.forEach(function(e){
+        e.parentNode.removeChild(e);
+        enemies = document.querySelectorAll('.enemy');
+    });
+  }
+}
+
+function deleteAllShots(){
+  if (enemyShots){
+    enemyShots.forEach(function(shot) {
+      shot.parentNode.removeChild(shot);
+      enemyShots = document.querySelectorAll('.enemyShots');
+    });
+  }
+  if (playerShots){
+    playerShots.forEach(function(shot) {
+      shot.parentNode.removeChild(shot);
+      playerShots = document.querySelectorAll('.playerShots');
+    });
+  }
+}
+
+// ------------ UPDATE ------------
 function update(){
   if (!player) {
     highScore = ReadCookie();
-    document.body.querySelector('.score').innerHTML = 'HightScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lifes: ' + lifes;
-    spawnEnemy();
-    player = document.querySelector('.player');
-    player.style.left = screenWidth/2 + "px";
-    player.style.top = heightLimit + "px";
-
-    playerRect = player.getBoundingClientRect();
+    nextLevel();
   }
 
   if (!gameOver){
-    if (lifes < 0) {
-    WriteCookie();
-
-    gameOver = true;
-    if (enemies) {
-      enemies.forEach(function(e){
-          e.parentNode.removeChild(e);
-          enemies = document.querySelectorAll('.enemy');
-      });
-    }
-    if (enemyShots){
-      enemyShots.forEach(function(shot) {
-        shot.parentNode.removeChild(shot);
-        enemyShots = document.querySelectorAll('.enemyShots');
-      });
-    }
-    if (playerShots){
-      playerShots.forEach(function(shot) {
-        shot.parentNode.removeChild(shot);
-        playerShots = document.querySelectorAll('.playerShots');
-      });
-    }
-
-    player.parentNode.removeChild(player);
-
-    document.body.querySelector('.score').innerHTML = '';
-    
-    if (!win){
-      var divText = document.createElement('div');
-      document.body.querySelector('.background').appendChild(divText);
-      divText.className = 'highScoreText';
-      document.body.querySelector('.highScoreText').innerHTML = 'HightScore: ' + ReadCookie();
-
-      var divText = document.createElement('div');
-      document.body.querySelector('.background').appendChild(divText);
-      divText.className = 'gameOverText';
-      document.body.querySelector('.gameOverText').innerHTML = 'Se Fodeu';
-    } else {
-      var divText = document.createElement('div');
-      document.body.querySelector('.background').appendChild(divText);
-      divText.className = 'gameOverText';
-      document.body.querySelector('.gameOverText').innerHTML = 'Level ' + difficult + ' concluído';
-    }
-
-    divText = document.createElement('div');
-    document.body.querySelector('.background').appendChild(divText);
-    divText.className = 'finalScoreText';
-    document.body.querySelector('.finalScoreText').innerHTML = 'Score: ' + scoreNum;
-  }
-
     if (enemies) {
       enemies.forEach(function(e) {
         var enemyRect = e.getBoundingClientRect();
 
         if (enemyRect.bottom >= playerRect.top) {
           lifes = -1;
-          scoreNum -= 150;
+          scoreNum -= 200;
+          gameOver = true;
         }
       });
 
@@ -271,9 +274,10 @@ function update(){
           moveEnemyLeft = true;
         }
       }
-    } else {
+    }
+
+    if (enemies.length <= 0) {
       win = true;
-      lifes=-1;
     }
 
     if (enemyShots){
@@ -357,7 +361,132 @@ function update(){
       }
       movePlayer();
     }
+
+    if (lifes < 0 || win) {
+      gameOver = true;
+    }
+  } else {
+    WriteCookie();
+    if (!win) {
+      if (!endButtonCreated){
+        endButtonCreated = true;
+        deleteAllEnemies();
+        deleteAllShots();
+        player.parentNode.removeChild(player);
+        
+        endGame_Lost();
+
+        endButton= document.createElement('button');
+        endButton= document.createElement('input');
+        // endButton.innerHTML = 'Next level';
+        endButton.setAttribute('type', 'button');
+        endButton.setAttribute('value', 'Reset game');
+        endButton.setAttribute('onclick', 'resetBtnClick();');
+
+        document.body.querySelector('.background').appendChild(endButton);
+      }
+      // endButton.onClick = function() {
+      //   console.log('CLICKED!');
+      //   difficult=1;
+      //   nextLevel();
+      //   lifes = 3;
+      //   scoreNum = 0;
+
+      //   var text = document.querySelector('.highScoreText');
+      //   text.parentNode.removeChild(text);
+
+      //   text = document.querySelector('.gameOverText');
+      //   text.parentNode.removeChild(text);
+
+      //   text = document.querySelector('.finalScoreText');
+      //   text.parentNode.removeChild(text);
+
+      //   buttonnode.parentNode.removeChild(buttonnode);
+      // };
+    } else {
+      if (!endButtonCreated){
+        endButtonCreated = true;
+        deleteAllShots();
+        player.parentNode.removeChild(player);
+
+        endGame_Win();
+
+        endButton= document.createElement('input');
+        // endButton.innerHTML = 'Next level';
+        endButton.setAttribute('type', 'button');
+        endButton.setAttribute('value', 'Next level');
+        endButton.setAttribute('onclick', 'nextBtnClick();');
+
+        document.body.querySelector('.background').appendChild(endButton);
+      }
+      // endButton.onClick = function() {
+      //   console.log('CLICKED!');
+      //   difficult++;
+      //   nextLevel();
+
+      //   var text = document.querySelector('.gameWinText');
+      //   text.parentNode.removeChild(text);
+
+      //   text = document.querySelector('.finalScoreText');
+      //   text.parentNode.removeChild(text);
+
+      //   buttonnode.parentNode.removeChild(buttonnode);
+      // };
+    }
   }
+}
+
+function nextBtnClick(){
+  difficult++;
+  nextLevel();
+
+  var text = document.querySelector('.gameWinText');
+  text.parentNode.removeChild(text);
+
+  var text2 = document.querySelector('.finalScoreText');
+  text2.parentNode.removeChild(text2);
+
+  endButton.parentNode.removeChild(endButton);
+}
+
+function resetBtnClick(){
+  difficult=1;
+  nextLevel();
+  
+  lifes = 3;
+  scoreNum = 0;
+
+  var text = document.querySelector('.highScoreText');
+  text.parentNode.removeChild(text);
+
+  var text2 = document.querySelector('.gameOverText');
+  text2.parentNode.removeChild(text2);
+
+  var text3 = document.querySelector('.finalScoreText');
+  text3.parentNode.removeChild(text3);
+
+  endButton.parentNode.removeChild(endButton);
+}
+
+function nextLevel(){
+  document.body.querySelector('.score').innerHTML = 'HightScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lifes: ' + lifes;
+
+  player = document.createElement('div');
+  document.body.querySelector('.background').appendChild(player);
+  player.className = 'player';
+
+  //player = document.querySelector('.player');
+  player.style.left = screenWidth/2 + "px";
+  player.style.top = heightLimit + "px";
+
+  playerRect = player.getBoundingClientRect();
+  
+  enemySpeed = difficult;
+  spawnEnemy();
+
+  gameOver = false;
+  win = false;
+  endButtonCreated = false;
 }
 
 document.addEventListener('keypress', keyPress);

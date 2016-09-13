@@ -57,6 +57,18 @@
   color: red;
 }
 
+.gameWinText {
+  font-size: 500%;
+  position:absolute;
+  width:800px;
+  height:640px;
+  left:50%;
+  top:50%;
+  margin-left:-260px;
+  margin-top:-100px;
+  color: blue;
+}
+
 .finalScoreText {
   font-size: 200%;
   position:absolute;
