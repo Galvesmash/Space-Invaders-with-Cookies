@@ -383,6 +383,8 @@ function update(){
         endButton.setAttribute('value', 'Reset game');
         endButton.setAttribute('onclick', 'resetBtnClick();');
 
+        endButton.className = 'endButton';
+
         document.body.querySelector('.background').appendChild(endButton);
       }
       // endButton.onClick = function() {
@@ -416,6 +418,8 @@ function update(){
         endButton.setAttribute('type', 'button');
         endButton.setAttribute('value', 'Next level');
         endButton.setAttribute('onclick', 'nextBtnClick();');
+
+        endButton.className = 'endButton';
 
         document.body.querySelector('.background').appendChild(endButton);
       }
