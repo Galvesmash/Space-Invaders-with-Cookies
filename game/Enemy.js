@@ -21,8 +21,8 @@ function spawnEnemy(){
 
 function moveEnemies(){
   if (moveEnemyLeft){
-    console.log(getLeftBorderEnemy() + ' > ' + bkRect.left);
-    if (getLeftBorderEnemy() > bkRect.left){
+    //console.log(getLeftBorderEnemy() + ' > ' + bkRect.left);
+    if (getLeftBorderEnemy() > bkRect.left+70){
       enemies.forEach(function(e){
         e.style.left = (parseInt(e.style.left)-enemySpeed) + "px";
       });
@@ -35,7 +35,7 @@ function moveEnemies(){
     }
   } else {
     //console.log(getRightBorderEnemy() + ' < ' + bkRect.right);
-    if (getRightBorderEnemy() < bkRect.right){
+    if (getRightBorderEnemy() < bkRect.right-70){
       enemies.forEach(function(e){
         e.style.left = (parseInt(e.style.left)+enemySpeed) + "px";
       });
