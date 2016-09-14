@@ -1,14 +1,17 @@
-var screenHeight=640, screenWidth=800, posX=screenWidth/2, playerRect;
+var screenHeight=640, screenWidth=800, posX=screenWidth/2, playerRect, borderRect;
 var highScore, gameOver=false, lifes=3, invencible=false; invencibleTime=2000, scoreNum=0, enemyPoints=10;
 var canShot = true, enemyCanShot=true, canRandEnemy=true, player, playerShots, enemyShots, enemies, currentEnemy;
 var moveSpeed = 5, shotSpeed = 8, enemySpeed=1, playerSize = 32, enemyDownSpeed=8;
 var heightLimit=screenHeight-playerSize-11, widthLimit=screenWidth-playerSize-1;
-var moveLeft = false, moveRight = false, moveEnemyLeft=false;
+var moveLeft = false, moveRight = false, moveEnemyLeft=false, lastEnemy=false;
 var difficult=1, MinTurn=2, turnsToUpSpeed=MinTurn, win=false, endButtonCreated=false, endButton;
+var bkRect;
 
 function update(){
   if (!player) {
     nextLevel();
+
+    bkRect = document.body.querySelector('.background').getBoundingClientRect();
   }
 
   if (!gameOver){
@@ -17,52 +20,30 @@ function update(){
         var enemyRect = e.getBoundingClientRect();
 
         if (enemyRect.bottom >= playerRect.top) {
+          var hitSnd = new Audio("../sounds/hit.ogg"); // buffers automatically when created
+          hitSnd.play();
           lifes = -1;
           scoreNum -= 200;
           gameOver = true;
         }
       });
 
-      if (enemyCanShot && canRandEnemy){
+      if (enemies.length > 1){
         enemies = document.querySelectorAll('.enemy');
-        canRandEnemy = false;
-        var rand = Math.floor((Math.random() * enemies.length) - 1);
-        currentEnemy = enemies[rand];
-        initShot('enemyShot', false);
-      }
-
-      if (moveEnemyLeft){
-        // console.log(getLeftBorderEnemy() + ' > ' + 13);
-        if (getLeftBorderEnemy() > 10){
-          enemies.forEach(function(e){
-            e.style.left = (parseInt(e.style.left)-enemySpeed) + "px";
-          });
-        }
-        else if (getLeftBorderEnemy() <= 10) {
-          enemies.forEach(function(e){
-            e.style.top = (parseInt(e.style.top)+enemyDownSpeed) + "px";
-          });
-          moveEnemyLeft = false;
+        if (enemyCanShot && canRandEnemy){
+          canRandEnemy = false;
+          var rand = Math.floor((Math.random() * enemies.length));
+          currentEnemy = enemies[rand];
+          initShot('enemyShot', false);
         }
       } else {
-        // console.log(getRightBorderEnemy() + ' < ' + widthLimit);
-        if (getRightBorderEnemy() < screenWidth+12){
-          enemies.forEach(function(e){
-            e.style.left = (parseInt(e.style.left)+enemySpeed) + "px";
-          });
-        }
-        else if (getRightBorderEnemy() >= screenWidth+12){
-          enemies.forEach(function(e){
-            e.style.top = (parseInt(e.style.top)+enemyDownSpeed) + "px";
-          });
-          turnsToUpSpeed--
-            if (turnsToUpSpeed <= 0){
-              turnsToUpSpeed=MinTurn;
-              enemySpeed++;
-            }
-          moveEnemyLeft = true;
+        if (!lastEnemy){
+          lastEnemy = true;
+          enemySpeed+=2;
         }
       }
+
+      moveEnemies();
     }
 
     if (enemies.length <= 0) {
@@ -202,13 +183,18 @@ function initShot(name, isPlayer) {
   var divShot = document.createElement('div');
   document.body.querySelector('.background').appendChild(divShot);
   divShot.className = name;
+  var shotSnd
 
   if (isPlayer){
+    shotSnd = new Audio("../sounds/playerShot.ogg"); // buffers automatically when created
+    shotSnd.play();
     divShot.style.left = (parseInt(player.style.left) + playerSize/2) + "px";
     divShot.style.top = parseInt(player.style.top) + "px";
     playerShots = document.querySelectorAll('.' + name);
   }
   else {
+    shotSnd = new Audio("../sounds/enemyShot.ogg"); // buffers automatically when created
+    shotSnd.play();
     if (currentEnemy){
       divShot.style.left = (parseInt(currentEnemy.style.left) + playerSize/2) + "px";
       divShot.style.top = parseInt(currentEnemy.style.top) + "px";
@@ -312,6 +298,7 @@ function nextLevel(){
   shot = false;
   moveRight = false;
   moveLeft = false;
+  lastEnemy=false
 }
 
 // ------------ Events -------------

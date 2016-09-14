@@ -1,20 +1,26 @@
 .background {
   position:relative;
+  /*margin-left: auto;
+  margin-right: auto;*/
   width:800px; height:640px;
   border:2px solid red;
   background-color: black;
+  /*transform: perspective(1500px) rotate3d(1,0,0, 35deg);*/
 }
 
 .player {
-  position:absolute; top:40px; left:400px;
+  position:relative; top:40px; left:400px;
   width:32px; height:32px;          
   background: url('../img/tank.png') 0 0;
+  /*transform: perspective(1500px) rotate3d(1,0,0, -15deg);*/
 }
 
 .enemy {
   position:absolute;
   width:32px; height:32px;          
   background: url('../img/spaceInvader1.png') 0 0;
+  /*transform: perspective(1500px) rotate3d(1,0,0, -15deg);*/
+
 }
 
 .playerShot {
@@ -44,6 +50,7 @@
   margin-left:-80px;
   margin-top:-300px;
   color: white;
+  /*transform: perspective(1500px) rotate3d(1,0,0, -15deg);*/
 }
 
 .gameOverText {
@@ -56,6 +63,7 @@
   margin-left:-150px;
   margin-top:-100px;
   color: red;
+  /*transform: perspective(1500px) rotate3d(1,0,0, -15deg);*/
 }
 
 .gameWinText {
@@ -68,6 +76,7 @@
   margin-left:-260px;
   margin-top:-100px;
   color: white;
+  /*transform: perspective(1500px) rotate3d(1,0,0, -15deg);*/
 }
 
 .finalScoreText {
@@ -80,10 +89,12 @@
   margin-left:-50px;
   margin-top:-10px;
   color: white;
+  /*transform: perspective(1500px) rotate3d(1,0,0, -15deg);*/
 }
 
 .endButton {
   margin-left:360px;
   margin-top:370px;
   color: black;
+  /*transform: perspective(1500px) rotate3d(1,0,0, -15deg);*/
 }

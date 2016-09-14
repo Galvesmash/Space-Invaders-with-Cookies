@@ -26,6 +26,9 @@ function movePlayerShots(){
           e.parentNode.removeChild(e);
           enemies = document.querySelectorAll('.enemy');
 
+          var explosionSnd = new Audio("../sounds/explosion1.ogg"); // buffers automatically when created
+          explosionSnd.play();
+
           scoreNum += enemyPoints;
           document.body.querySelector('.score').innerHTML = 'HighScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lives: ' + lifes;
         }
@@ -43,6 +46,12 @@ function movePlayerShots(){
 }
 
 function movePlayer() {
+  if (moveLeft && moveRight){
+    moveLeft = false;
+    moveRight = false;
+    return;
+  }
+  
   if (moveLeft) { //<-
     posX-=moveSpeed;
     if (posX < 1) {
