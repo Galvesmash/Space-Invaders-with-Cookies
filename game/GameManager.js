@@ -292,6 +292,7 @@ function nextLevel(){
   enemySpeed = difficult;
   spawnEnemy();
 
+  screenCorrection=70;
   gameOver = false;
   win = false;
   endButtonCreated = false;

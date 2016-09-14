@@ -1,3 +1,5 @@
+var screenCorrection=70;
+
 function spawnEnemy(){
   var enemySize=32, spawnSpace=18/*12*/, enemyMaxPerLine=12/*16*/, enemyMaxLines=5, spawnHeight=0, spawnWidth=0;
   for (var j=0; j<enemyMaxLines; j++){
@@ -22,7 +24,7 @@ function spawnEnemy(){
 function moveEnemies(){
   if (moveEnemyLeft){
     //console.log(getLeftBorderEnemy() + ' > ' + bkRect.left);
-    if (getLeftBorderEnemy() > bkRect.left+70){
+    if (getLeftBorderEnemy() > bkRect.left + screenCorrection){
       enemies.forEach(function(e){
         e.style.left = (parseInt(e.style.left)-enemySpeed) + "px";
       });
@@ -32,10 +34,11 @@ function moveEnemies(){
         e.style.top = (parseInt(e.style.top)+enemyDownSpeed) + "px";
       });
       moveEnemyLeft = false;
+      screenCorrection--;
     }
   } else {
     //console.log(getRightBorderEnemy() + ' < ' + bkRect.right);
-    if (getRightBorderEnemy() < bkRect.right-70){
+    if (getRightBorderEnemy() < bkRect.right - screenCorrection){
       enemies.forEach(function(e){
         e.style.left = (parseInt(e.style.left)+enemySpeed) + "px";
       });
@@ -46,6 +49,7 @@ function moveEnemies(){
       });
       turnsToUpSpeed--;
       moveEnemyLeft = true;
+      screenCorrection--;
     }
     if (turnsToUpSpeed <= 0){
       turnsToUpSpeed=MinTurn;
