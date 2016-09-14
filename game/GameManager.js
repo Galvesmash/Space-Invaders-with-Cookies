@@ -69,92 +69,17 @@ function update(){
       win = true;
     }
 
-    if (enemyShots){
-      playerRect = player.getBoundingClientRect();
-      enemyShots.forEach(function(shot) {
-        var shotRect = shot.getBoundingClientRect();
+    moveEnemyShots();
 
-        if (shotRect.bottom <= playerRect.bottom
-              && shotRect.top >= playerRect.top
-              && shotRect.left >= playerRect.left
-              && shotRect.right <= playerRect.right) {
-            if (!invencible) {
-              invencible = true;
-              lifes--;
-              scoreNum-=50;
-              player.style.background = 'url(\'../img/tankDmg.png\') 0 0';
-              document.body.querySelector('.score').innerHTML = 'HighScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lives: ' + lifes;
-              window.setTimeout(resetInvencibility, invencibleTime);
-            }
+    movePlayerShots();
 
-            shot.parentNode.removeChild(shot);
-            shot = null;
-            enemyShots = document.querySelectorAll('.enemyShot');
-          }
-
-        if (shot){
-          shot.style.top = (parseInt(shot.style.top)+shotSpeed) + "px";
-          shotRect = shot.getBoundingClientRect();
-          if (shotRect.bottom >= screenHeight-1) {
-            shot.parentNode.removeChild(shot);
-            enemyShots = document.querySelectorAll('.enemyShot');
-          }
-        }
-      });
-    }
-
-    if (playerShots) {
-      playerShots.forEach(function(shot) {
-        var shotRect = shot.getBoundingClientRect();
-        enemies.forEach(function(e){
-          var enemyRect = e.getBoundingClientRect();
-          // console.log (shotRect.bottom+' <= '+enemyRect.bottom+' && '+shotRect.top+' >= '+enemyRect.top+' && '+shotRect.left+' >= '+enemyRect.left+' && '+shotRect.right+' <= '+enemyRect.right);
-
-          if (shotRect.bottom <= enemyRect.bottom
-              && shotRect.top >= enemyRect.top
-              && shotRect.left >= enemyRect.left
-              && shotRect.right <= enemyRect.right){
-            shot.parentNode.removeChild(shot);
-            shot = null;
-            playerShots = document.querySelectorAll('.playerShot');
-
-            e.parentNode.removeChild(e);
-            enemies = document.querySelectorAll('.enemy');
-
-            scoreNum += enemyPoints;
-            document.body.querySelector('.score').innerHTML = 'HighScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lives: ' + lifes;
-          }
-        });
-
-        if (shot){
-          shot.style.top = (parseInt(shot.style.top)-shotSpeed) + "px";
-          if (parseInt(shot.style.top) <= 1) {
-            shot.parentNode.removeChild(shot);
-            playerShots = document.querySelectorAll('.playerShot');
-          }
-        }
-      });
-    }
-
-    if (moveLeft) { //<-
-      posX-=moveSpeed;
-      if (posX < 1) {
-        posX = 1;
-      }
-      movePlayer();
-    }
-    else if (moveRight) { //->
-      posX+=moveSpeed;
-      if (posX > widthLimit) {
-        posX = widthLimit;
-      }
-      movePlayer();
-    }
+    movePlayer();
 
     if (lifes < 0 || win) {
       gameOver = true;
     }
-  } else {
+  }
+  else {
     WriteCookie();
     if (!win) {
       if (!endButtonCreated){
@@ -176,7 +101,8 @@ function update(){
 
         document.body.querySelector('.background').appendChild(endButton);
       }
-    } else {
+    }
+    else {
       if (!endButtonCreated){
         endButtonCreated = true;
         deleteAllShots();
@@ -262,6 +188,71 @@ function ReadCookie() {
       return window.localStorage.highscore;;
     }
 }
+
+// ------------ Spawn Shots -------------
+function initShot(name, isPlayer) {
+  if (isPlayer){
+    canShot = false;
+    window.setTimeout(resetShotPlayer, 100);
+  } else {
+    enemyCanShot = false;
+    window.setTimeout(resetShotEnemy, 300);
+  }
+
+  var divShot = document.createElement('div');
+  document.body.querySelector('.background').appendChild(divShot);
+  divShot.className = name;
+
+  if (isPlayer){
+    divShot.style.left = (parseInt(player.style.left) + playerSize/2) + "px";
+    divShot.style.top = parseInt(player.style.top) + "px";
+    playerShots = document.querySelectorAll('.' + name);
+  }
+  else {
+    if (currentEnemy){
+      divShot.style.left = (parseInt(currentEnemy.style.left) + playerSize/2) + "px";
+      divShot.style.top = parseInt(currentEnemy.style.top) + "px";
+    } else {
+      divShot.parentNode.removeChild(divShot);
+    }
+    enemyShots = document.querySelectorAll('.' + name);
+  }
+}
+
+// ------------ End Game -------------
+function endGame_Lost(){
+  document.body.querySelector('.score').innerHTML = '';
+  
+  var divText = document.createElement('div');
+  document.body.querySelector('.background').appendChild(divText);
+  divText.className = 'highScoreText';
+  document.body.querySelector('.highScoreText').innerHTML = 'HightScore: ' + ReadCookie();
+
+  divText = document.createElement('div');
+  document.body.querySelector('.background').appendChild(divText);
+  divText.className = 'gameOverText';
+  document.body.querySelector('.gameOverText').innerHTML = 'Se Fodeu';
+
+  divText = document.createElement('div');
+  document.body.querySelector('.background').appendChild(divText);
+  divText.className = 'finalScoreText';
+  document.body.querySelector('.finalScoreText').innerHTML = 'Score: ' + scoreNum;
+}
+
+function endGame_Win(){
+  document.body.querySelector('.score').innerHTML = '';
+
+  var divText = document.createElement('div');
+  document.body.querySelector('.background').appendChild(divText);
+  divText.className = 'gameWinText';
+  document.body.querySelector('.gameWinText').innerHTML = 'Level ' + difficult + ' concluído';
+
+  divText = document.createElement('div');
+  document.body.querySelector('.background').appendChild(divText);
+  divText.className = 'finalScoreText';
+  document.body.querySelector('.finalScoreText').innerHTML = 'Score: ' + scoreNum;
+}
+
 
 // ------------ Reset Game / Next Level -------------
 function nextBtnClick(){
