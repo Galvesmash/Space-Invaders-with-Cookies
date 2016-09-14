@@ -1,7 +1,7 @@
 .background {
   position:relative;
-  /*margin-left: auto;
-  margin-right: auto;*/
+  margin-left: auto;
+  margin-right: auto;
   width:800px; height:640px;
   border:2px solid red;
   background-color: black;
@@ -36,6 +36,7 @@
 }
 
 .score {
+  position:relative;
   font-size: 150%;
   color: black;
 }
