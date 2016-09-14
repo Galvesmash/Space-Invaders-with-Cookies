@@ -2,6 +2,7 @@
   position:relative;
   width:800px; height:640px;
   border:2px solid red;
+  background-color: black;
 }
 
 .player {
@@ -19,13 +20,13 @@
 .playerShot {
   position:absolute;
   width:3px; height:6px;          
-  background-color:black;
+  background-color: lawngreen;
 }
 
 .enemyShot {
   position:absolute;
   width:4px; height:8px;          
-  background-color: green;
+  background-color: white;
 }
 
 .score {
@@ -40,9 +41,9 @@
   height:640px;
   left:50%;
   top:50%;
-  margin-left:-70px;
+  margin-left:-80px;
   margin-top:-300px;
-  color: black;
+  color: white;
 }
 
 .gameOverText {
@@ -66,7 +67,7 @@
   top:50%;
   margin-left:-260px;
   margin-top:-100px;
-  color: blue;
+  color: white;
 }
 
 .finalScoreText {
@@ -78,7 +79,7 @@
   top:50%;
   margin-left:-50px;
   margin-top:-10px;
-  color: black;
+  color: white;
 }
 
 .endButton {

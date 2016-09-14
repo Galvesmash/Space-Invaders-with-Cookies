@@ -297,7 +297,8 @@ function nextLevel(){
   player.className = 'player';
 
   //player = document.querySelector('.player');
-  player.style.left = screenWidth/2 + "px";
+  posX=screenWidth/2
+  player.style.left = posX + "px";
   player.style.top = heightLimit + "px";
 
   playerRect = player.getBoundingClientRect();
