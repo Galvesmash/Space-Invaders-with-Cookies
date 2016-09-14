@@ -21,63 +21,64 @@ function spawnEnemy(){
 
 function moveEnemies(){
   if (moveEnemyLeft){
-    //console.log(getLeftBorderEnemy() + ' > ' + 13);
-    if (getLeftBorderEnemy() > 10){
+    console.log(getLeftBorderEnemy() + ' > ' + bkRect.left);
+    if (getLeftBorderEnemy() > bkRect.left){
       enemies.forEach(function(e){
         e.style.left = (parseInt(e.style.left)-enemySpeed) + "px";
       });
     }
-    else if (getLeftBorderEnemy() <= 10) {
+    else {
       enemies.forEach(function(e){
         e.style.top = (parseInt(e.style.top)+enemyDownSpeed) + "px";
       });
       moveEnemyLeft = false;
     }
   } else {
-    //console.log(getRightBorderEnemy() + ' < ' + widthLimit);
-    if (getRightBorderEnemy() < screenWidth+12){
+    //console.log(getRightBorderEnemy() + ' < ' + bkRect.right);
+    if (getRightBorderEnemy() < bkRect.right){
       enemies.forEach(function(e){
         e.style.left = (parseInt(e.style.left)+enemySpeed) + "px";
       });
     }
-    else if (getRightBorderEnemy() >= screenWidth+12){
+    else {
       enemies.forEach(function(e){
         e.style.top = (parseInt(e.style.top)+enemyDownSpeed) + "px";
       });
-      turnsToUpSpeed--
-      if (turnsToUpSpeed <= 0){
-        turnsToUpSpeed=MinTurn;
-        enemySpeed++;
-      }
+      turnsToUpSpeed--;
       moveEnemyLeft = true;
+    }
+    if (turnsToUpSpeed <= 0){
+      turnsToUpSpeed=MinTurn;
+      enemySpeed++;
     }
   }
 }
 
 function getLeftBorderEnemy(){
-  var left = 0;
+  var left = bkRect.right;
+  enemies = document.querySelectorAll('.enemy');
   enemies.forEach(function(e){
     var enemyRect = e.getBoundingClientRect();
-    if (left < Math.floor(bkRect.left)){
+    if (left > enemyRect.left){
+      //console.log(left + ' < ' + enemyRect.left);
       left = enemyRect.left;
     }
   });
   
-  console.log('left: ' + left + ' < ' + Math.floor(bkRect.left));
   return left;
 }
 
 function getRightBorderEnemy(){
-  var right = 0;
+  var right = 0.0;
   enemies = document.querySelectorAll('.enemy');
   enemies.forEach(function(e){
     var enemyRect = e.getBoundingClientRect();
-    if (right < Math.floor(bkRect.right)){
+    if (right < enemyRect.right){
+      //console.log('right: ' + right + ' < ' + enemyRect.right);
       right = enemyRect.right;
     }
   });
 
-  console.log('right: ' + right + ' < ' + Math.floor(bkRect.right));
   return right;
 }
 
