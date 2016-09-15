@@ -190,14 +190,14 @@ function initShot(name, isPlayer) {
   var shotSnd
 
   if (isPlayer){
-    shotSnd = new Audio("../sounds/playerShot.ogg"); // buffers automatically when created
+    shotSnd = new Audio("sounds/playerShot.ogg"); // buffers automatically when created
     shotSnd.play();
     divShot.style.left = (parseInt(player.style.left) + playerSize/2) + "px";
     divShot.style.top = parseInt(player.style.top) + "px";
     playerShots = document.querySelectorAll('.' + name);
   }
   else {
-    shotSnd = new Audio("../sounds/enemyShot.ogg"); // buffers automatically when created
+    shotSnd = new Audio("sounds/enemyShot.ogg"); // buffers automatically when created
     shotSnd.play();
     if (currentEnemy){
       divShot.style.left = (parseInt(currentEnemy.style.left) + playerSize/2) + "px";

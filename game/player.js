@@ -1,6 +1,6 @@
 function resetInvencibility(){
   invencible=false;
-  player.style.background = 'url(\'../img/tank.png\') 0 0';;
+  player.style.background = 'url(\'img/tank.png\') 0 0';;
 }
 
 function resetShotPlayer() {
@@ -26,7 +26,7 @@ function movePlayerShots(){
           e.parentNode.removeChild(e);
           enemies = document.querySelectorAll('.enemy');
 
-          var explosionSnd = new Audio("../sounds/explosion1.ogg"); // buffers automatically when created
+          var explosionSnd = new Audio("sounds/explosion1.ogg"); // buffers automatically when created
           explosionSnd.play();
 
           scoreNum += enemyPoints;
@@ -51,7 +51,7 @@ function movePlayer() {
     moveRight = false;
     return;
   }
-  
+
   if (moveLeft) { //<-
     posX-=moveSpeed;
     if (posX < 1) {

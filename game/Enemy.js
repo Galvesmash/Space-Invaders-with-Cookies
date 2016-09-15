@@ -102,14 +102,14 @@ function moveEnemyShots(){
             && shotRect.left >= playerRect.left
             && shotRect.right <= playerRect.right) {
           if (!invencible) {
-            var hitSnd = new Audio("../sounds/hit.ogg"); // buffers automatically when created
+            var hitSnd = new Audio("sounds/hit.ogg"); // buffers automatically when created
             hitSnd.play();
 
             invencible = true;
             lifes--;
             scoreNum-=50;
 
-            player.style.background = 'url(\'../img/tankDmg.png\') 0 0';
+            player.style.background = 'url(\'img/tankDmg.png\') 0 0';
             document.body.querySelector('.score').innerHTML = 'HighScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lives: ' + lifes;
             window.setTimeout(resetInvencibility, invencibleTime);
           }
