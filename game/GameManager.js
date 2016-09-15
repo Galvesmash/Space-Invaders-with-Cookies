@@ -71,6 +71,7 @@ function update(){
         
         endGame_Lost();
 
+        /*
         endButton= document.createElement('button');
         endButton= document.createElement('input');
 
@@ -81,6 +82,7 @@ function update(){
         //endButton.className = 'endButton';
 
         document.body.querySelector('.background').appendChild(endButton);
+        */
       }
     }
     else {
@@ -91,6 +93,7 @@ function update(){
 
         endGame_Win();
 
+        /*
         endButton= document.createElement('input');
         // endButton.innerHTML = 'Next level';
         endButton.setAttribute('type', 'button');
@@ -100,6 +103,7 @@ function update(){
         //endButton.className = 'endButton';
 
         document.body.querySelector('.background').appendChild(endButton);
+        */
       }
     }
   }
@@ -209,42 +213,35 @@ function initShot(name, isPlayer) {
 function endGame_Lost(){
   document.body.querySelector('.score').innerHTML = '';
   
-  var divText = document.createElement('div');
-  document.body.querySelector('.background').appendChild(divText);
-  divText.className = 'highScoreText';
-  document.body.querySelector('.highScoreText').innerHTML = 'HightScore: ' + ReadCookie();
+  createTextDiv('highScoreText', 'HightScore: ' + ReadCookie());
+  createTextDiv('gameOverText', 'Se Fodeu');
+  createTextDiv('finalScoreText', 'Score: ' + scoreNum);
 
-  divText = document.createElement('div');
-  document.body.querySelector('.background').appendChild(divText);
-  divText.className = 'gameOverText';
-  document.body.querySelector('.gameOverText').innerHTML = 'Se Fodeu';
-
-  divText = document.createElement('div');
-  document.body.querySelector('.background').appendChild(divText);
-  divText.className = 'finalScoreText';
-  document.body.querySelector('.finalScoreText').innerHTML = 'Score: ' + scoreNum;
+  createTextDiv('waitNextTurn', '"Wait 6 seconds to New Game"');
+  window.setTimeout(resetBtnClick, 6000);
 }
 
 function endGame_Win(){
   document.body.querySelector('.score').innerHTML = '';
 
-  var divText = document.createElement('div');
-  document.body.querySelector('.background').appendChild(divText);
-  divText.className = 'gameWinText';
-  document.body.querySelector('.gameWinText').innerHTML = 'Level ' + difficult + ' concluído';
+  createTextDiv('gameWinText', 'Level ' + difficult + ' concluído');
+  createTextDiv('finalScoreText', 'Score: ' + scoreNum);
 
-  divText = document.createElement('div');
-  document.body.querySelector('.background').appendChild(divText);
-  divText.className = 'finalScoreText';
-  document.body.querySelector('.finalScoreText').innerHTML = 'Score: ' + scoreNum;
+  createTextDiv('waitNextTurn', '"Wait 5 seconds to Next Level"');
+  window.setTimeout(nextBtnClick, 5000);
 }
 
+function createTextDiv(className, text){
+  var divText = document.createElement('div');
+  document.body.querySelector('.background').appendChild(divText);
+  divText.className = className;
+  document.body.querySelector('.' + className).innerHTML = text;
+}
 
 // ------------ Reset Game / Next Level -------------
 function nextBtnClick(){
   difficult++;
   lifes++;
-  nextLevel();
 
   var text = document.querySelector('.gameWinText');
   text.parentNode.removeChild(text);
@@ -252,12 +249,15 @@ function nextBtnClick(){
   var text2 = document.querySelector('.finalScoreText');
   text2.parentNode.removeChild(text2);
 
-  endButton.parentNode.removeChild(endButton);
+  var text3 = document.querySelector('.waitNextTurn');
+  text3.parentNode.removeChild(text3);
+
+  nextLevel();
+  //endButton.parentNode.removeChild(endButton);
 }
 
 function resetBtnClick(){
   difficult=1;
-  nextLevel();
 
   lifes = 3;
   scoreNum = 0;
@@ -271,7 +271,11 @@ function resetBtnClick(){
   var text3 = document.querySelector('.finalScoreText');
   text3.parentNode.removeChild(text3);
 
-  endButton.parentNode.removeChild(endButton);
+  var text4 = document.querySelector('.waitNextTurn');
+  text4.parentNode.removeChild(text4);
+
+  nextLevel();
+  //endButton.parentNode.removeChild(endButton);
 }
 
 function nextLevel(){
