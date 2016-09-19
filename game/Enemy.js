@@ -7,7 +7,7 @@ function spawnEnemy(){
     spawnWidth=spawnSpace+18;
     for (var i=0; i<=enemyMaxPerLine; i++){
       var divEnemy = document.createElement('div');
-      document.body.querySelector('.background').appendChild(divEnemy);
+      document.documentElement.querySelector('.background').appendChild(divEnemy);
       divEnemy.className = 'enemy';
 
       divEnemy.style.top = spawnHeight + "px";
@@ -25,28 +25,28 @@ function moveEnemies(){
   if (moveEnemyLeft){
     //console.log(getLeftBorderEnemy() + ' > ' + bkRect.left);
     if (getLeftBorderEnemy() > bkRect.left + screenCorrection){
-      enemies.forEach(function(e){
-        e.style.left = (parseInt(e.style.left)-enemySpeed) + "px";
-      });
+      for (var i=0; i < enemies.length; i++){
+        enemies[i].style.left = (parseInt(enemies[i].style.left)-enemySpeed) + "px";
+      }
     }
     else {
-      enemies.forEach(function(e){
-        e.style.top = (parseInt(e.style.top)+enemyDownSpeed) + "px";
-      });
+      for (var i=0; i < enemies.length; i++){
+        enemies[i].style.top = (parseInt(enemies[i].style.top)+enemyDownSpeed) + "px";
+      }
       moveEnemyLeft = false;
       screenCorrection--;
     }
   } else {
     //console.log(getRightBorderEnemy() + ' < ' + bkRect.right);
     if (getRightBorderEnemy() < bkRect.right - screenCorrection){
-      enemies.forEach(function(e){
-        e.style.left = (parseInt(e.style.left)+enemySpeed) + "px";
-      });
+      for (var i=0; i < enemies.length; i++){
+        enemies[i].style.left = (parseInt(enemies[i].style.left)+enemySpeed) + "px";
+      }
     }
     else {
-      enemies.forEach(function(e){
-        e.style.top = (parseInt(e.style.top)+enemyDownSpeed) + "px";
-      });
+      for (var i=0; i < enemies.length; i++){
+        enemies[i].style.top = (parseInt(enemies[i].style.top)+enemyDownSpeed) + "px";
+      }
       turnsToUpSpeed--;
       moveEnemyLeft = true;
       screenCorrection--;
@@ -61,13 +61,13 @@ function moveEnemies(){
 function getLeftBorderEnemy(){
   var left = bkRect.right;
   enemies = document.querySelectorAll('.enemy');
-  enemies.forEach(function(e){
-    var enemyRect = e.getBoundingClientRect();
+  for (var i=0; i < enemies.length; i++){
+    var enemyRect = enemies[i].getBoundingClientRect();
     if (left > enemyRect.left){
       //console.log(left + ' < ' + enemyRect.left);
       left = enemyRect.left;
     }
-  });
+  }
   
   return left;
 }
@@ -75,13 +75,13 @@ function getLeftBorderEnemy(){
 function getRightBorderEnemy(){
   var right = 0.0;
   enemies = document.querySelectorAll('.enemy');
-  enemies.forEach(function(e){
-    var enemyRect = e.getBoundingClientRect();
+  for (var i=0; i < enemies.length; i++){
+    var enemyRect = enemies[i].getBoundingClientRect();
     if (right < enemyRect.right){
       //console.log('right: ' + right + ' < ' + enemyRect.right);
       right = enemyRect.right;
     }
-  });
+  }
 
   return right;
 }
@@ -92,10 +92,13 @@ function resetShotEnemy() {
 }
 
 function moveEnemyShots(){
+  //enemyShots = document.querySelectorAll('.enemyShot');
   if (enemyShots){
     playerRect = player.getBoundingClientRect();
-    enemyShots.forEach(function(shot) {
-      var shotRect = shot.getBoundingClientRect();
+
+    for (var i=0; i < enemyShots.length; i++){
+      // var enemyShot = enemyShots[i];
+      var shotRect = enemyShots[i].getBoundingClientRect();
 
       if (shotRect.bottom <= playerRect.bottom
             && shotRect.top >= playerRect.top
@@ -110,23 +113,24 @@ function moveEnemyShots(){
             scoreNum-=50;
 
             player.style.background = 'url(\'img/tankDmg.png\') 0 0';
-            document.body.querySelector('.score').innerHTML = 'HighScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lives: ' + lifes;
+            document.documentElement.querySelector('.score').innerHTML = 'HighScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lives: ' + lifes;
             window.setTimeout(resetInvencibility, invencibleTime);
           }
 
-          shot.parentNode.removeChild(shot);
-          shot = null;
-          enemyShots = document.querySelectorAll('.enemyShot');
+          enemyShots[i].parentNode.removeChild(enemyShots[i]);
+          enemyShots[i] = null;
         }
 
-      if (shot){
-        shot.style.top = (parseInt(shot.style.top)+shotSpeed) + "px";
-        shotRect = shot.getBoundingClientRect();
+      if (enemyShots[i]){
+        enemyShots[i].style.top = (parseInt(enemyShots[i].style.top)+shotSpeed) + "px";
+        shotRect = enemyShots[i].getBoundingClientRect();
         if (shotRect.bottom >= screenHeight-1) {
-          shot.parentNode.removeChild(shot);
-          enemyShots = document.querySelectorAll('.enemyShot');
+          enemyShots[i].parentNode.removeChild(enemyShots[i]);
+          enemyShots[i] = null;
+          //enemyShots = document.querySelectorAll('.enemyShot');
         }
       }
-    });
+    }
+    enemyShots = document.querySelectorAll('.enemyShot');
   }
 }

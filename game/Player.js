@@ -8,40 +8,46 @@ function resetShotPlayer() {
 }
 
 function movePlayerShots(){
+  playerShots = document.querySelectorAll('.playerShot');
   if (playerShots) {
-    playerShots.forEach(function(shot) {
-      var shotRect = shot.getBoundingClientRect();
-      enemies.forEach(function(e){
-        var enemyRect = e.getBoundingClientRect();
+    var shotCount = playerShots.length;
+    for (var f=0; f < shotCount; f++){
+      var shotRect = playerShots[f].getBoundingClientRect();
+
+      var enemyCount = enemies.length;
+      for (var i=0; i < enemyCount; i++){
+        var enemyRect = enemies[i].getBoundingClientRect();
         // console.log (shotRect.bottom+' <= '+enemyRect.bottom+' && '+shotRect.top+' >= '+enemyRect.top+' && '+shotRect.left+' >= '+enemyRect.left+' && '+shotRect.right+' <= '+enemyRect.right);
 
         if (shotRect.bottom <= enemyRect.bottom
             && shotRect.top >= enemyRect.top
             && shotRect.left >= enemyRect.left
             && shotRect.right <= enemyRect.right){
-          shot.parentNode.removeChild(shot);
-          shot = null;
-          playerShots = document.querySelectorAll('.playerShot');
+          playerShots[f].parentNode.removeChild(playerShots[f]);
+          playerShots[f] = null;
+          //playerShots = document.querySelectorAll('.playerShot');
 
-          e.parentNode.removeChild(e);
+          enemies[i].parentNode.removeChild(enemies[i]);
           enemies = document.querySelectorAll('.enemy');
 
           var explosionSnd = new Audio("sounds/explosion1.ogg"); // buffers automatically when created
           explosionSnd.play();
 
           scoreNum += enemyPoints;
-          document.body.querySelector('.score').innerHTML = 'HighScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lives: ' + lifes;
-        }
-      });
-
-      if (shot){
-        shot.style.top = (parseInt(shot.style.top)-shotSpeed) + "px";
-        if (parseInt(shot.style.top) <= 1) {
-          shot.parentNode.removeChild(shot);
-          playerShots = document.querySelectorAll('.playerShot');
+          document.documentElement.querySelector('.score').innerHTML = 'HighScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lives: ' + lifes;
+          break;
         }
       }
-    });
+
+      if (playerShots[f]){
+        playerShots[f].style.top = (parseInt(playerShots[f].style.top)-shotSpeed) + "px";
+        if (parseInt(playerShots[f].style.top) <= 1) {
+          playerShots[f].parentNode.removeChild(playerShots[f]);
+          playerShots[f] = null;
+        }
+      }
+    }
+    //playerShots = document.querySelectorAll('.playerShots');
   }
 }
 
@@ -65,29 +71,5 @@ function movePlayer() {
       posX = widthLimit;
     }
     player.style.left = posX + "px";
-  }
-}
-
-function deleteAllEnemies(){
-  if (enemies) {
-    enemies.forEach(function(e){
-        e.parentNode.removeChild(e);
-        enemies = document.querySelectorAll('.enemy');
-    });
-  }
-}
-
-function deleteAllShots(){
-  if (enemyShots){
-    enemyShots.forEach(function(shot) {
-      shot.parentNode.removeChild(shot);
-      enemyShots = document.querySelectorAll('.enemyShots');
-    });
-  }
-  if (playerShots){
-    playerShots.forEach(function(shot) {
-      shot.parentNode.removeChild(shot);
-      playerShots = document.querySelectorAll('.playerShots');
-    });
   }
 }

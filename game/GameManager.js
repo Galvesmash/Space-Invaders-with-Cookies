@@ -11,12 +11,23 @@ function update(){
   if (!player) {
     nextLevel();
 
-    bkRect = document.body.querySelector('.background').getBoundingClientRect();
+    bkRect = document.documentElement.querySelector('.background').getBoundingClientRect();
   }
 
   if (!gameOver){
     if (enemies) {
-      enemies.forEach(function(e) {
+      for (var i=0; i < enemies.length; i++){
+        var enemyRect = enemies[i].getBoundingClientRect();
+
+        if (enemyRect.bottom >= playerRect.top) {
+          var hitSnd = new Audio("sounds/hit.ogg"); // buffers automatically when created
+          hitSnd.play();
+          lifes = -1;
+          scoreNum -= 200;
+          gameOver = true;
+        }
+      }
+      /*enemies.forEach(function(e) {
         var enemyRect = e.getBoundingClientRect();
 
         if (enemyRect.bottom >= playerRect.top) {
@@ -26,7 +37,7 @@ function update(){
           scoreNum -= 200;
           gameOver = true;
         }
-      });
+      });*/
 
       if (enemies.length > 1){
         enemies = document.querySelectorAll('.enemy');
@@ -50,11 +61,10 @@ function update(){
       win = true;
     }
 
-    moveEnemyShots();
-
-    movePlayerShots();
-
     movePlayer();
+    movePlayerShots();
+    
+    moveEnemyShots();
 
     if (lifes < 0 || win) {
       gameOver = true;
@@ -65,45 +75,22 @@ function update(){
     if (!win) {
       if (!endButtonCreated){
         endButtonCreated = true;
+
         deleteAllEnemies();
         deleteAllShots();
         player.parentNode.removeChild(player);
         
         endGame_Lost();
-
-        /*
-        endButton= document.createElement('button');
-        endButton= document.createElement('input');
-
-        endButton.setAttribute('type', 'button');
-        endButton.setAttribute('value', 'Reset game');
-        endButton.setAttribute('onclick', 'resetBtnClick();');
-
-        //endButton.className = 'endButton';
-
-        document.body.querySelector('.background').appendChild(endButton);
-        */
       }
     }
     else {
       if (!endButtonCreated){
         endButtonCreated = true;
+
         deleteAllShots();
         player.parentNode.removeChild(player);
 
         endGame_Win();
-
-        /*
-        endButton= document.createElement('input');
-        // endButton.innerHTML = 'Next level';
-        endButton.setAttribute('type', 'button');
-        endButton.setAttribute('value', 'Next level');
-        endButton.setAttribute('onclick', 'nextBtnClick();');
-
-        //endButton.className = 'endButton';
-
-        document.body.querySelector('.background').appendChild(endButton);
-        */
       }
     }
   }
@@ -167,11 +154,53 @@ function WriteCookie(/*cExDays*/) {
 }
 
 function ReadCookie() {
-    if (window.localStorage.highscore === undefined) {
-      return 0;
-    } else {
-      return window.localStorage.highscore;;
+  if (window.localStorage.highscore === undefined) {
+    return 0;
+  } else {
+    return window.localStorage.highscore;;
+  }
+}
+
+// ------------ Delete Stuff ------------
+function deleteAllEnemies(){
+  var cont;
+  if (enemies) {
+    cont = enemies.length;
+    for (var i=0; i < cont; i++){
+      enemies[i].parentNode.removeChild(enemies[i]);
     }
+  }
+}
+
+function deleteAllShots(){
+  console.log (enemyShots);
+  var cont;
+  if (enemyShots){
+    cont = enemyShots.length;
+    console.log('EnemyShots: ' + cont);
+    for (var i=0; i < cont; i++) {
+      // var enemyShot = enemyShots[i];
+      if (enemyShots[i]){
+        console.log (enemyShots[i]);
+        enemyShots[i].parentNode.removeChild(enemyShots[i]);
+        enemyShots[i] = null;
+      }
+    }
+    enemyShots = document.querySelectorAll('.enemyShots');
+  }
+
+  console.log (playerShots);
+  if (playerShots){
+    cont = playerShots.length;
+    console.log('PlayerShots: ' + cont);
+    for (var i=0; i < cont; i++){
+      if (playerShots[i]){
+        playerShots[i].parentNode.removeChild(playerShots[i]);
+        playerShots[i] = null;
+      }
+    }
+    playerShots = document.querySelectorAll('.playerShots');
+  }
 }
 
 // ------------ Spawn Shots -------------
@@ -185,16 +214,16 @@ function initShot(name, isPlayer) {
   }
 
   var divShot = document.createElement('div');
-  document.body.querySelector('.background').appendChild(divShot);
+  document.documentElement.querySelector('.background').appendChild(divShot);
   divShot.className = name;
-  var shotSnd
+  var shotSnd;
 
   if (isPlayer){
     shotSnd = new Audio("sounds/playerShot.ogg"); // buffers automatically when created
     shotSnd.play();
     divShot.style.left = (parseInt(player.style.left) + playerSize/2) + "px";
     divShot.style.top = parseInt(player.style.top) + "px";
-    playerShots = document.querySelectorAll('.' + name);
+    playerShots = document.documentElement.querySelectorAll('.' + name);
   }
   else {
     shotSnd = new Audio("sounds/enemyShot.ogg"); // buffers automatically when created
@@ -202,16 +231,22 @@ function initShot(name, isPlayer) {
     if (currentEnemy){
       divShot.style.left = (parseInt(currentEnemy.style.left) + playerSize/2) + "px";
       divShot.style.top = parseInt(currentEnemy.style.top) + "px";
-    } else {
+    }/* else {
       divShot.parentNode.removeChild(divShot);
+    }*/
+    /*if (enemyShots){
+      enemyShots[enemyShots.length] = divShot;
     }
-    enemyShots = document.querySelectorAll('.' + name);
+    else {
+      enemyShots = document.querySelectorAll('.' + name);
+    }*/
+    enemyShots = document.documentElement.querySelectorAll('.' + name);
   }
 }
 
 // ------------ End Game -------------
 function endGame_Lost(){
-  document.body.querySelector('.score').innerHTML = '';
+  document.documentElement.querySelector('.score').innerHTML = '';
   
   createTextDiv('highScoreText', 'HightScore: ' + ReadCookie());
   createTextDiv('gameOverText', 'Se Fodeu');
@@ -222,7 +257,7 @@ function endGame_Lost(){
 }
 
 function endGame_Win(){
-  document.body.querySelector('.score').innerHTML = '';
+  document.documentElement.querySelector('.score').innerHTML = '';
 
   createTextDiv('gameWinText', 'Level ' + difficult + ' concluído');
   createTextDiv('finalScoreText', 'Score: ' + scoreNum);
@@ -233,9 +268,9 @@ function endGame_Win(){
 
 function createTextDiv(className, text){
   var divText = document.createElement('div');
-  document.body.querySelector('.background').appendChild(divText);
+  document.documentElement.querySelector('.background').appendChild(divText);
   divText.className = className;
-  document.body.querySelector('.' + className).innerHTML = text;
+  document.documentElement.querySelector('.' + className).innerHTML = text;
 }
 
 // ------------ Reset Game / Next Level -------------
@@ -280,10 +315,10 @@ function resetBtnClick(){
 
 function nextLevel(){
   highScore = ReadCookie();
-  document.body.querySelector('.score').innerHTML = 'HighScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lives: ' + lifes;
+  document.documentElement.querySelector('.score').innerHTML = 'HighScore: ' + highScore + ' ------ Score: ' + scoreNum + ' ------ Lives: ' + lifes;
 
   player = document.createElement('div');
-  document.body.querySelector('.background').appendChild(player);
+  document.documentElement.querySelector('.background').appendChild(player);
   player.className = 'player';
 
   //player = document.querySelector('.player');
@@ -294,6 +329,11 @@ function nextLevel(){
   playerRect = player.getBoundingClientRect();
   
   enemySpeed = difficult;
+
+  enemies = null;
+  enemyShots = null;
+  playerShots = null;
+
   spawnEnemy();
 
   screenCorrection=70;
